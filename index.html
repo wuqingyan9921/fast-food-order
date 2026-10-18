@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MOUU'S Fast Food Ordering Form</title>
+
+    <style>
+        body {
+            background-image: url("background.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+
+        h1 {
+            color: rgb(196, 139, 99);
+            text-shadow: 2px 2px 5px rgb(57, 27, 27);
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(5px);
+            padding: 25px;
+            max-width: 420px;
+            margin: auto;
+            border-radius: 15px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            box-sizing: border-box;
+            border: 1px solid #f2c8c8;
+            border-radius: 8px;
+        }
+
+        .food-dropdown {
+            position: relative;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        #foodButton {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #c18f8f;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .food-menu {
+            display: none;
+            position: absolute;
+            width: 100%;
+            max-height: 320px;
+            overflow-y: auto;
+            background: rgba(179, 135, 135, 0.95);
+            border-radius: 10px;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .food-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .food-option img {
+            width: 100px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .food-option span {
+            font-size: 16px;
+        }
+
+        .food-option:hover {
+            background-color: #ffe0b2;
+        }
+
+        .food-option.selected {
+            background-color: #ffd180;
+        }
+
+        #foodMessage {
+            font-size: 13px;
+        }
+
+        .order-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 18px;
+            border: none;
+            border-radius: 8px;
+            background-color: #c9777e;
+            color: rgb(212, 155, 89);
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .clear-button {
+            background-color: #555;
+            margin-top: 10px;
+        }
+
+        .order-button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>MOUU'S Fast Food Ordering Form</h1>
+
+    <form id="orderForm">
+
+        <label for="customer">Customer Name:</label>
+        <input type="text" id="customer"
+               name="customer" required>
+
+        <label>Choose Food:</label>
+
+        <div class="food-dropdown">
+
+            <button type="button" id="foodButton"
+                    onclick="toggleFoodMenu()">
+                <span id="selectedFood">Select your food</span>
+                <span>▼</span>
+            </button>
+
+            <div id="foodMenu" class="food-menu">
+
+                <div class="food-option"
+                     onclick="chooseFood('Burger', this)">
+                    <img src="burger.jpg" alt="Burger">
+                    <span>Burger</span>
+                </div>
+
+                <div class="food-option"
+                     onclick="chooseFood('Pizza', this)">
+                    <img src="pizza.jpg" alt="Pizza">
+                    <span>Pizza</span>
+                </div>
+
+                <div class="food-option"
+                     onclick="chooseFood('Sandwich', this)">
+                    <img src="sandwich.jpg" alt="Sandwich">
+                    <span>Sandwich</span>
+                </div>
+
+                <div class="food-option"
+                     onclick="chooseFood('Taco', this)">
+                    <img src="taco.jpg" alt="Taco">
+                    <span>Taco</span>
+                </div>
+
+                <div class="food-option"
+                     onclick="chooseFood('Chocolate cake', this)">
+                    <img src="chocolatecake.jpg" alt="Chocolatecake">
+                    <span>Chocolatecake</span>
+                </div>
+
+            </div>
+        </div>
+
+        <input type="hidden" id="foodInput" name="food">
+
+        <p id="foodMessage">You can select multiple foods！</p >
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity"
+               name="quantity" min="1" value="1" required>
+
+        <button type="submit" class="order-button">
+            Place Order
+        </button>
+
+        <button type="reset" class="order-button clear-button">
+            Clear
+        </button>
+
+    </form>
+
+    <script>
+        var selectedFoods = [];
+
+        function toggleFoodMenu() {
+            var menu = document.getElementById("foodMenu");
+
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+
+        function chooseFood(name, element) {
+            if (selectedFoods.includes(name)) {
+                selectedFoods = selectedFoods.filter(
+                    function(food) {
+                        return food !== name;
+                    }
+                );
+                element.classList.remove("selected");
+            } else {
+                selectedFoods.push(name);
+                element.classList.add("selected");
+            }
+
+            document.getElementById("selectedFood").textContent =
+                selectedFoods.length > 0
+                ? selectedFoods.join(", ")
+                : "Select your food";
+
+            document.getElementById("foodInput").value =
+                selectedFoods.join(", ");
+
+            document.getElementById("foodMessage").textContent =
+                selectedFoods.length + " food(s) selected";
+        }
+
+        document.getElementById("orderForm")
+            .addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                if (selectedFoods.length === 0) {
+                    alert("Please select at least one food!");
+                    return;
+                }
+
+                alert(
+                    "Thank you, " +
+                    document.getElementById("customer").value +
+                    "! Your order: " +
+                    selectedFoods.join(", ") +
+                    ". Quantity: " +
+                    document.getElementById("quantity").value
+                );
+            });
+
+        document.getElementById("orderForm")
+            .addEventListener("reset", function() {
+                selectedFoods = [];
+
+                document.getElementById("selectedFood").textContent =
+                    "Select your food";
+
+                document.getElementById("foodInput").value = "";
+
+                document.getElementById("foodMessage").textContent =
+                    "You can select multiple foods.";
+
+                document.querySelectorAll(".food-option")
+                    .forEach(function(option) {
+                        option.classList.remove("selected");
+                    });
+
+                document.getElementById("foodMenu").style.display =
+                    "none";
+            });
+    </script>
+
+</body>
+</html>
